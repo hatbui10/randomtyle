@@ -152,6 +152,17 @@ button:active{
   box-shadow: 0 4px 10px rgba(0, 255, 200, 0.3);
 }
 
+.box1  {
+  width: 400px;
+  margin: 40px auto;
+  padding: 25px;
+  border-radius: 16px;
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+  text-align: center;
+}
+
 
 
 
@@ -159,21 +170,17 @@ button:active{
 </head>
 
 <body>
-<div> Số lần quay để có 1 tỷ lệ mới</div>
-
-
-  
+<div class="box1">
+  <div>Số lần quay để có 1 tỷ lệ mới</div>
   <input type="number" id="shuffleLimit" value="5" min="1">
 
+  <div id="spinCounter">Số lần quay: 0</div>
+  <div id="nextShuffle"></div>
 
+  <div class="container" id="container"></div>
 
-<div id="spinCounter">Số lần quay: 0</div>
-<div id="nextShuffle"></div>
-
-<div class="container" id="container"></div>
-
-<button onclick="startSpin()">Quay</button>
-
+  <button onclick="startSpin()">Quay</button>
+</div>
 <script>
 
 let ratios = [0.55, 0.8, 0.15, 0.4, 0.25];
@@ -290,4 +297,5 @@ updateCounterUI();
 
 </body>
 </html>
+
 
