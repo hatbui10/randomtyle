@@ -7,29 +7,47 @@
 <style>
 body{
   margin: 0;
+  padding-top: 40px; /* thay margin bằng padding */
   font-family: Arial, sans-serif;
   background: #111;
   color: #fff;
 
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; /* sát trên */
-  align-items: center;         /* căn giữa ngang */
+  justify-content: flex-start;
+  align-items: center;
 
-  min-height: 100vh;
+  height: 500px;
 }
+
 
 input{
-  width: 30%;
-  height: 30px;
-  padding: 5px;
-  text-align: center;
-  border-radius: 6px;
-  border: none;
-  margin: 10px auto;
-  display: block;
-  font-size:20px;
+  width: 5%;
+  height : 5%;
+  padding:5px;
+  text-align:center;
+  border-radius:6px;
+  border:none;
+   font-size:20px;
+
+  margin:10px auto;
+  appearance: none;
 }
+
+
+/* Chrome, Edge, Safari */
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button{
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number]{
+  -moz-appearance: textfield;
+}
+
+
 
 #spinCounter{
   margin:5px 0;
@@ -52,11 +70,27 @@ input{
   display:flex;
   flex-direction:column;
   align-items:center;
+  font-size:60px;
 }
 
+
+
+h1{
+  font-size: 28px;
+  text-align: center;
+  color: #00ffcc;
+  margin-bottom: 20px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-weight: bold;
+  text-shadow: 0 0 10px rgba(0,255,200,0.6);
+}
+
+
+
 .box{
-  width:50px;
-  height:50px;
+  width:60px;
+  height:60px;
   background:#222;
   border-radius:10px;
   display:flex;
@@ -75,13 +109,13 @@ input{
 }
 
 .zero{
-  background:#401515;
-  color:#ff5555;
+  background:#1A05A2;
+  color:#FBF6F6;
 }
 
 .one{
-  background:#0f3d2e;
-  color:#00ff88;
+  background:#FF4400;
+  color:#FBF6F6;
 }
 
 .blink{
@@ -94,36 +128,44 @@ input{
 }
 
 button{
-  padding:10px 20px;
-  border:none;
-  border-radius:8px;
-  cursor:pointer;
-  font-weight:bold;
-}
-  
-  
-  h1{
-  font-size: 28px;
-  text-align: center;
-  color: #00ffcc;
-  margin-bottom: 20px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
+  padding: 12px 28px;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
   font-weight: bold;
-  text-shadow: 0 0 10px rgba(0,255,200,0.6);
+  font-size: 16px;
+
+  background: linear-gradient(135deg, #00ffcc, #00ccff);
+  color: #111;
+
+  box-shadow: 0 6px 15px rgba(0, 255, 200, 0.3);
+  transition: all 0.25s ease;
 }
-  
-  
+
+button:hover{
+  transform: translateY(-3px);
+  box-shadow: 0 10px 20px rgba(0, 255, 200, 0.45);
+}
+
+button:active{
+  transform: translateY(0);
+  box-shadow: 0 4px 10px rgba(0, 255, 200, 0.3);
+}
+
+
+
+
 </style>
 </head>
 
 <body>
-  <h1> Số lần quay để đổi tỷ lệ mới</h1>
-<div>
+<div> Số lần quay để có 1 tỷ lệ mới</div>
+
+
   
-  <input type="number" id="shuffleLimit" value="3" min="1">
-  
-</div>
+  <input type="number" id="shuffleLimit" value="5" min="1">
+
+
 
 <div id="spinCounter">Số lần quay: 0</div>
 <div id="nextShuffle"></div>
@@ -134,7 +176,7 @@ button{
 
 <script>
 
-let ratios = [0.3, 0.6, 0.2, 0.4, 0.7];
+let ratios = [0.35, 0.6, 0.15, 0.4, 0.25];
 let spinCount = 0;
 
 function initUI(){
@@ -144,7 +186,7 @@ function initUI(){
   for(let i=0;i<5;i++){
     container.innerHTML += `
       <div class="item">
-        <div class="box" id="b${i+1}">0</div>
+        <div class="box" id="b${i+1}">-</div>
         <div class="ratio" id="r${i+1}"></div>
       </div>
     `;
