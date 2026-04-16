@@ -3,201 +3,351 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neon File Merger Pro</title>
+    <title>Numeric Pro - Merger & Scanner</title>
     <style>
         :root {
-            --neon-cyan: #00f3ff;
-            --neon-pink: #ff00ff;
-            --bg-dark: #0a0b10;
+            --neon-color: #00f2ff;
+            --bg-color: #050505;
+            --container-bg: #0a0a0a;
+            --border-glow: 0 0 10px rgba(0, 242, 255, 0.5);
         }
 
         body {
-            background-color: var(--bg-dark);
-            color: #fff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
+            background-color: var(--bg-color);
+            color: #ffffff;
+            font-family: 'Segoe UI', sans-serif;
             margin: 0;
-            padding: 20px;
+            display: flex;
+            justify-content: center;
         }
 
-        /* Glassmorphism Container */
-        .container {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-            width: 90%;
+        .main-container {
+            margin-top: 30px; /* Rule: 30px top */
+            margin-left: 3px;  /* Rule: 3px sides */
+            margin-right: 3px;
+            width: 100%;
             max-width: 800px;
+            background: var(--container-bg);
+            padding: 15px;
+            border: 1px solid #333;
+            border-radius: 8px;
+            box-shadow: var(--border-glow);
+        }
+
+        /* 6 ô nhập số */
+        .slot-wrapper {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .slot {
+            height: 50px;
+            background: #111;
+            border: 2px solid #444;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--neon-color);
+            text-shadow: 0 0 5px var(--neon-color);
+        }
+
+        #input-slot {
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            border: none;
+            color: var(--neon-color);
             text-align: center;
+            font-size: 1.5rem;
+            outline: none;
         }
 
-        h1 {
-            color: var(--neon-cyan);
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            text-shadow: 0 0 10px var(--neon-cyan);
-            margin-bottom: 30px;
+        /* Thống kê */
+        .stats-bar {
+            font-size: 0.85rem;
+            color: #888;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #111;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
         }
-
-        .upload-area {
-            border: 2px dashed var(--neon-pink);
-            padding: 30px;
-            border-radius: 15px;
-            cursor: pointer;
-            transition: 0.3s;
-            margin-bottom: 20px;
-        }
-
-        .upload-area:hover {
-            box-shadow: 0 0 15px var(--neon-pink);
-            background: rgba(255, 0, 255, 0.05);
-        }
+        .stats-bar b { color: var(--neon-color); }
 
         .btn-group {
             display: flex;
-            gap: 15px;
-            justify-content: center;
-            margin-top: 20px;
+            gap: 10px;
+            margin-bottom: 20px;
         }
 
-        button {
-            padding: 12px 25px;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
+        button, label {
+            flex: 1;
+            padding: 12px;
+            background: #1a1a1a;
+            border: 1px solid var(--neon-color);
+            color: var(--neon-color);
+            text-align: center;
             cursor: pointer;
-            transition: 0.3s;
             text-transform: uppercase;
+            font-size: 0.75rem;
+            transition: 0.3s;
+            border-radius: 4px;
         }
 
-        .btn-merge {
-            background: var(--neon-cyan);
+        button:hover, label:hover {
+            background: var(--neon-color);
             color: #000;
-            box-shadow: 0 0 10px var(--neon-cyan);
         }
 
-        .btn-export {
-            background: var(--neon-pink);
-            color: #fff;
-            box-shadow: 0 0 10px var(--neon-pink);
+        /* Log tìm kiếm */
+        #log-container {
+            height: 120px;
+            overflow-y: auto;
+            border: 1px solid #333;
+            background: #000;
+            padding: 10px;
+            margin-bottom: 15px;
+            font-size: 0.85rem;
         }
 
-        button:disabled {
-            filter: grayscale(1);
-            cursor: not-allowed;
-            box-shadow: none;
+        .log-item {
+            padding: 6px;
+            border-bottom: 1px solid #222;
+            cursor: pointer;
         }
 
-        #status {
-            margin-top: 15px;
-            color: #00ffaa;
-            font-size: 0.9em;
+        /* Bảng hiển thị số trong file */
+        #data-display {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2px;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #222;
+            padding: 10px;
+            background: #000;
         }
 
-        textarea {
-            width: 100%;
-            height: 300px;
-            background: rgba(0, 0, 0, 0.3);
-            color: #00f3ff;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 15px;
-            margin-top: 20px;
-            resize: none;
-            font-family: 'Courier New', Courier, monospace;
+        .data-cell {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #111;
+            border: 1px solid #222;
+            font-family: monospace;
+            font-size: 0.9rem;
+            color: #666;
+            border-radius: 3px;
+        }
+
+        .highlight {
+            background: #ffff00 !important;
+            color: #000 !important;
+            font-weight: bold;
+            box-shadow: 0 0 8px #ffff00;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>Data Scanner Merger</h1>
-        
-        <div class="upload-area" onclick="document.getElementById('fileInput').click()">
-            <p>Nhấp để chọn 23 file hoặc kéo thả vào đây</p>
-            <input type="file" id="fileInput" multiple accept=".txt" style="display:none">
+<div class="main-container">
+    <div class="slot-wrapper">
+        <div class="slot" id="s0"></div>
+        <div class="slot" id="s1"></div>
+        <div class="slot" id="s2"></div>
+        <div class="slot" id="s3"></div>
+        <div class="slot" id="s4"></div>
+        <div class="slot">
+            <input type="number" id="input-slot" inputmode="numeric" pattern="[0-9]*" placeholder="?">
         </div>
-
-        <div id="status">Chưa có file nào được chọn</div>
-
-        <div class="btn-group">
-            <button class="btn-merge" id="mergeBtn">Nối & Lọc Dữ Liệu</button>
-            <button class="btn-export" id="exportBtn" disabled>Xuất File .TXT</button>
-        </div>
-
-        <textarea id="preview" placeholder="Nội dung sau khi nối sẽ hiển thị ở đây..."></textarea>
     </div>
 
-    <script>
-        const fileInput = document.getElementById('fileInput');
-        const status = document.getElementById('status');
-        const mergeBtn = document.getElementById('mergeBtn');
-        const exportBtn = document.getElementById('exportBtn');
-        const preview = document.getElementById('preview');
+    <div class="stats-bar">
+        <span>Tổng chữ số: <b id="count-total">0</b></span>
+        <span id="status-msg">Chưa có dữ liệu</span>
+    </div>
 
-        let mergedContent = "";
+    <div class="btn-group">
+        <label for="file-upload">Upload Cộng Dồn</label>
+        <input type="file" id="file-upload" multiple hidden accept=".txt">
+        <button onclick="clearData()">Xóa Tất Cả</button>
+        <button onclick="exportData()">Xuất File Nối</button>
+    </div>
 
-        fileInput.addEventListener('change', () => {
-            const fileCount = fileInput.files.length;
-            status.innerText = fileCount > 0 ? `Đã chọn ${fileCount} file.` : "Chưa có file nào được chọn";
-        });
+    <div id="log-container"></div>
 
-        mergeBtn.addEventListener('click', async () => {
-            const files = fileInput.files;
-            if (files.length === 0) return alert("Vui lòng chọn file trước!");
+    <div id="data-display"></div>
+</div>
 
-            let allData = [];
+<script>
+    const inputSlot = document.getElementById('input-slot');
+    const logContainer = document.getElementById('log-container');
+    const dataDisplay = document.getElementById('data-display');
+    const fileUpload = document.getElementById('file-upload');
+    const countTotal = document.getElementById('count-total');
+    const statusMsg = document.getElementById('status-msg');
+    
+    let slots = ["", "", "", "", ""];
+    let masterData = localStorage.getItem('masterData') || "";
+
+    // Tự động focus và tải dữ liệu cũ
+    window.onload = () => {
+        inputSlot.focus();
+        if (masterData) {
+            renderDataCells();
+            updateStats("Đã khôi phục dữ liệu");
+        }
+    };
+
+    // Click bất kỳ đâu cũng focus về ô nhập
+    document.addEventListener('click', (e) => {
+        if(e.target.tagName !== 'BUTTON' && e.target.tagName !== 'LABEL') {
+            inputSlot.focus();
+        }
+    });
+
+    // Xử lý nhập ô 6 -> Dịch trái
+    inputSlot.addEventListener('input', (e) => {
+        const val = e.target.value.slice(-1);
+        if (val >= '0' && val <= '9') {
+            slots.shift();
+            slots.push(val);
             
-            for (let file of files) {
-                const text = await file.text();
-                // Tách thành các dòng/số dựa trên khoảng trắng hoặc xuống dòng
-                const lines = text.split(/[\s,]+/);
-                allData = allData.concat(lines);
+            for (let i = 0; i < 5; i++) {
+                document.getElementById(`s${i}`).innerText = slots[i];
             }
-
-            // Logic xử lý dữ liệu đặc thù
-            // 1. Loại bỏ trùng lặp
-            // 2. Lọc các chuỗi ít hơn 10 số
-            const filteredData = [...new Set(allData)].filter(item => {
-                const cleanItem = item.trim();
-                return cleanItem.length >= 10 && !isNaN(cleanItem);
-            });
-
-            mergedContent = filteredData.join('\n');
-            preview.value = mergedContent;
             
-            if (mergedContent) {
-                exportBtn.disabled = false;
-                status.innerText = `Nối thành công! Đã lọc còn ${filteredData.length} mục hợp lệ.`;
+            checkPattern();
+        }
+        inputSlot.value = "";
+    });
+
+    // Xử lý Upload & Nối file (Lấy TOÀN BỘ số)
+    fileUpload.addEventListener('change', async (e) => {
+        let newContent = "";
+        const files = e.target.files;
+        if (files.length === 0) return;
+
+        for (let file of files) {
+            const text = await file.text();
+            // CHỈ lấy chữ số, giữ nguyên mọi số tìm thấy
+            const matches = text.match(/\d/g);
+            if (matches) {
+                newContent += matches.join("");
+            }
+        }
+        
+        masterData += newContent;
+        localStorage.setItem('masterData', masterData);
+        renderDataCells();
+        updateStats(`+${newContent.length} số mới`);
+    });
+
+    // Cập nhật thống kê số lượng
+    function updateStats(msg) {
+        countTotal.innerText = masterData.length.toLocaleString();
+        statusMsg.innerText = msg;
+    }
+
+    // Vẽ dữ liệu vào bảng lưới
+    function renderDataCells() {
+        dataDisplay.innerHTML = "";
+        const chars = masterData.split("");
+        // Chỉ vẽ tối đa 5000 ô để tránh lag trình duyệt nếu file quá lớn
+        const displayLimit = 5000; 
+        
+        chars.forEach((char, index) => {
+            if (index < displayLimit) {
+                const span = document.createElement('span');
+                span.className = 'data-cell';
+                span.id = `cell-${index}`;
+                span.innerText = char;
+                dataDisplay.appendChild(span);
             }
         });
 
-                exportBtn.addEventListener('click', () => {
-            if (!mergedContent) return;
+        if (chars.length > displayLimit) {
+            const note = document.createElement('div');
+            note.style.width = "100%";
+            note.style.padding = "10px";
+            note.style.color = "#555";
+            note.innerText = `... và ${(chars.length - displayLimit).toLocaleString()} số khác (chỉ hiển thị 5000 số đầu để tránh lag)`;
+            dataDisplay.appendChild(note);
+        }
+    }
 
-            // Tạo 4 số ngẫu nhiên để tên file ngắn gọn
-            const randomSuffix = Math.floor(1000 + Math.random() * 9000);
-            const fileName = `file nối ${randomSuffix}.txt`;
+    // Tìm kiếm dãy 5 số
+    function checkPattern() {
+        const searchStr = slots.join("");
+        if (searchStr.length < 5) return;
 
-            const blob = new Blob([mergedContent], { type: 'text/plain' });
-            const url = URL.createObjectURL(blob);
+        // Tìm tất cả vị trí (không chỉ vị trí đầu tiên)
+        let pos = masterData.indexOf(searchStr);
+        if (pos !== -1) {
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-item';
+            logEntry.innerHTML = `<span style="color:var(--neon-color)">[${timestamp}]</span> Tìm thấy: <b style="color:#fff">${searchStr}</b> tại vị trí ${pos}`;
             
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = fileName; // Tên file mới: file nối XXXX.txt
-            document.body.appendChild(a);
-            a.click();
+            logEntry.onclick = () => scrollToPattern(pos, searchStr.length);
+            logContainer.prepend(logEntry);
             
-            // Dọn dẹp bộ nhớ
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-        });
+            // Hiệu ứng rung ô nhập khi tìm thấy
+            inputSlot.parentElement.style.borderColor = "yellow";
+            setTimeout(() => inputSlot.parentElement.style.borderColor = "#444", 500);
+        }
+    }
 
-    </script>
+    // Cuộn tới vị trí số trong lưới
+    function scrollToPattern(startIndex, length) {
+        document.querySelectorAll('.data-cell').forEach(el => el.classList.remove('highlight'));
+
+        for (let i = 0; i < length; i++) {
+            const cell = document.getElementById(`cell-${startIndex + i}`);
+            if (cell) cell.classList.add('highlight');
+        }
+
+        const firstCell = document.getElementById(`cell-${startIndex}`);
+        if (firstCell) {
+            firstCell.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+            alert("Số này nằm ở phần dữ liệu ẩn (ngoài giới hạn hiển thị 5000 ô)!");
+        }
+    }
+
+    // Xuất file đã nối
+    function exportData() {
+        if (!masterData) return alert("Không có dữ liệu để xuất!");
+        const blob = new Blob([masterData], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `file_noi_${Date.now()}.txt`;
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    // Xóa dữ liệu
+    function clearData() {
+        if (confirm("Xác nhận xóa sạch toàn bộ dữ liệu?")) {
+            masterData = "";
+            localStorage.removeItem('masterData');
+            dataDisplay.innerHTML = "";
+            logContainer.innerHTML = "";
+            slots = ["", "", "", "", ""];
+            for (let i = 0; i < 5; i++) document.getElementById(`s${i}`).innerText = "";
+            updateStats("Đã xóa sạch");
+        }
+    }
+</script>
+
 </body>
 </html>
